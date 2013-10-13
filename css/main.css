@@ -21,14 +21,21 @@ body,
     text-align: center;
 }
 
+.hidden {
+    display: none;
+}
+
 .btn {
+    border: 0;
+    border-radius: 3px;
+    color: white;
     padding: 1em 2em;
 }
 
 .btn-start {
-    /*background-color: #a72525;*/
     background-color: #25a725;
-    border: 0;
-    border-radius: 3px;
-    color: white;
+}
+
+.btn-stop {
+    background-color: #a72525;
 }
