@@ -10,7 +10,13 @@ function () {
         /**
          * Name of the database.
          */
-        DB_NAME = 'browser-storage-limit';
+        DB_NAME = 'browser-storage-limit',
+
+        /**
+         * Name of object store used to check the browser support for saving a
+         * blob to local storage.
+         */
+        BLOB_SUPPORT_OBJECT_STORE = 'blobsupport';
 
     function Db() {
         this.checkSupport();
@@ -19,6 +25,21 @@ function () {
     }
 
     var p = Db.prototype = {};
+
+    /**
+     * Checks to see if the browser supports saving a blob into the local database
+     * by trying to do exactly that.
+     */
+    p.checkBlobSupport = function () {
+        try {
+            var store = getTransaction(BLOB_SUPPORT_OBJECT_STORE).objectStore(BLOB_SUPPORT_OBJECT_STORE);
+            store.objectStore(BLOB_SUPPORT_OBJECT_STORE).put(new Blob(), 'key');
+            store.objectStore(BLOB_SUPPORT_OBJECT_STORE).delete('key');
+            this.blobSupported = true;
+        } catch (err) {
+            this.blobSupported = false;
+        }
+    };
 
     /**
      * Sets flag to indicate whether indexed DB is supported in the visiting browser.
@@ -61,16 +82,13 @@ function () {
              */
             if (event.oldVersion < 1) {
                 db.createObjectStore('images');
+                db.createObjectStore(BLOB_SUPPORT_OBJECT_STORE);
             }
         };
 
         openRequest.onsuccess = function () {
             self.database = openRequest.result;
-            self.loaded = true;
-
-            if (self.onLoaded) {
-                self.onLoaded();
-            }
+            self.checkBlobSupport();
         };
     };
 
