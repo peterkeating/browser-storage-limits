@@ -40,6 +40,13 @@ function ($, Db, ImagesDb, ImagesWeb) {
         $notSupported = $('.js-not-supported'),
 
         /**
+         * DOM element for displaying additional notes to the user.
+         */
+        $notes = $('.js-notes'),
+        $notesList = $notes.find('ul'),
+
+
+        /**
          * Blob to be saved into local storage.
          */
         imageBlob,
@@ -53,6 +60,14 @@ function ($, Db, ImagesDb, ImagesWeb) {
          * Count of how many times the image has been saved to the local database.
          */
         saveCount = 0;
+
+    /**
+     * Adds a note to the list of notes and reveals the notes.
+     */
+    var addNote = function (note) {
+        $notesList.append('<li>' + note + '</li>');
+        $notes.removeClass('hidden');
+    };
 
     /**
      * Saves image to the local database.
@@ -75,6 +90,10 @@ function ($, Db, ImagesDb, ImagesWeb) {
         $btnStart.addClass('hidden');
         $btnStop.removeClass('hidden');
         $counter.removeClass('hidden');
+
+        if (!Db.blobSupported) {
+            addNote('Browser doesn\'t support storing blobs, reverted to converting blob to base64 using <a href="https://developer.mozilla.org/en-US/docs/Web/API/FileReader">FileReader</a> & <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window.btoa">btoa</a>.');
+        }
 
         saveImage();
     };
@@ -110,6 +129,7 @@ function ($, Db, ImagesDb, ImagesWeb) {
         if (!Db.supported) {
             $btnStart.addClass('hidden');
             $notSupported.removeClass('hidden');
+            return;
         }
     });
 

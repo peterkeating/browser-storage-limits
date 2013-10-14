@@ -54,6 +54,15 @@ body,
     font-style: italic;
 }
 
+.notes {
+    text-align: left;
+}
+
+.notes ul {
+    padding-left: 1em;
+}
+
+.notes ul li,
 .note {
     font-size: 0.9em;
     font-style: italic;
