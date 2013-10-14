@@ -52,6 +52,11 @@ function ($, Db, ImagesDb, ImagesWeb) {
         imageBlob,
 
         /**
+         * Flag containing whether the experiment is currently running.
+         */
+        running = false,
+
+        /**
          * Interval used to continually save an image to the database.
          */
         timeout,
@@ -73,6 +78,10 @@ function ($, Db, ImagesDb, ImagesWeb) {
      * Saves image to the local database.
      */
     var saveImage = function () {
+        if (!running) {
+            return;
+        }
+
         timeout = window.setTimeout(function () {
             ImagesDb.save(++saveCount, imageBlob, {
                 success: function () {
@@ -95,6 +104,8 @@ function ($, Db, ImagesDb, ImagesWeb) {
             addNote('Browser doesn\'t support storing blobs, reverted to converting blob to base64 using <a href="https://developer.mozilla.org/en-US/docs/Web/API/FileReader">FileReader</a> & <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window.btoa">btoa</a>.');
         }
 
+        running = true;
+
         saveImage();
     };
 
@@ -102,6 +113,8 @@ function ($, Db, ImagesDb, ImagesWeb) {
      * Stops the loop of saving to the local database.
      */
     var stop = function () {
+        running = false;
+
         window.clearTimeout(timeout);
 
         $btnStop.addClass('hidden');
