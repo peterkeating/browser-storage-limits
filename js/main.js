@@ -2,7 +2,8 @@ require([
     'jquery',
     'storage/db',
     'storage/images',
-    'web/images'
+    'web/images',
+    'polyfills/raf'
 ],
 
 function ($, Db, ImagesDb, ImagesWeb) {
@@ -70,8 +71,10 @@ function ($, Db, ImagesDb, ImagesWeb) {
      * Adds a note to the list of notes and reveals the notes.
      */
     var addNote = function (note) {
-        $notesList.append('<li>' + note + '</li>');
-        $notes.removeClass('hidden');
+        window.requestAnimationFrame(function () {
+            $notesList.append('<li>' + note + '</li>');
+            $notes.removeClass('hidden');
+        });
     };
 
     /**
@@ -96,9 +99,11 @@ function ($, Db, ImagesDb, ImagesWeb) {
      * Starts the experiment.
      */
     var start = function () {
-        $btnStart.addClass('hidden');
-        $btnStop.removeClass('hidden');
-        $counter.removeClass('hidden');
+        window.requestAnimationFrame(function () {
+            $btnStart.addClass('hidden');
+            $btnStop.removeClass('hidden');
+            $counter.removeClass('hidden');
+        });
 
         if (!Db.blobSupported) {
             addNote('Browser doesn\'t support storing blobs, reverted to converting blob to base64 using <a href="https://developer.mozilla.org/en-US/docs/Web/API/FileReader">FileReader</a> & <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window.btoa">btoa</a>.');
@@ -117,8 +122,10 @@ function ($, Db, ImagesDb, ImagesWeb) {
 
         window.clearTimeout(timeout);
 
-        $btnStop.addClass('hidden');
-        $btnStart.removeClass('hidden');
+        window.requestAnimationFrame(function () {
+            $btnStop.addClass('hidden');
+            $btnStart.removeClass('hidden');
+        });
     };
 
     /**
@@ -132,7 +139,7 @@ function ($, Db, ImagesDb, ImagesWeb) {
          */
 
         var count = parseFloat((saveCount * imageBlob.size) / 1048576).toFixed(2);
-        $counterCount.html(count);
+        window.requestAnimationFrame(function () {  $counterCount.html(count); });
     };
 
     $(document).ready(function () {
@@ -140,8 +147,10 @@ function ($, Db, ImagesDb, ImagesWeb) {
         $btnStop.on('click', stop);
 
         if (!Db.supported || !window.FileReader) {
-            $btnStart.addClass('hidden');
-            $notSupported.removeClass('hidden');
+            window.requestAnimationFrame(function () {
+                $btnStart.addClass('hidden');
+                $notSupported.removeClass('hidden');
+            });
 
             if (!window.FileReader) {
                 addNote('FileReader is not supported in this browser.');
