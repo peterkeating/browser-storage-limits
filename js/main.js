@@ -1,15 +1,16 @@
 require([
     'jquery',
+    'storage/db',
     'storage/images',
     'web/images'
 ],
 
-function ($, ImagesDb, ImagesWeb) {
+function ($, Db, ImagesDb, ImagesWeb) {
 
         /**
          * Milliseconds between each save of an image to the local database.
          */
-    var STEP = 250,
+    var DELAY = 250,
 
         /**
          * Button to kick start experiment.
@@ -33,6 +34,12 @@ function ($, ImagesDb, ImagesWeb) {
         $counterCount = $('.js-counter .js-count'),
 
         /**
+         * DOM element containing message that browser doesn't support client side
+         * storage.
+         */
+        $notSupported = $('.js-not-supported'),
+
+        /**
          * Blob to be saved into local storage.
          */
         imageBlob,
@@ -40,7 +47,7 @@ function ($, ImagesDb, ImagesWeb) {
         /**
          * Interval used to continually save an image to the database.
          */
-        interval,
+        timeout,
 
         /**
          * Count of how many times the image has been saved to the local database.
@@ -51,29 +58,32 @@ function ($, ImagesDb, ImagesWeb) {
      * Saves image to the local database.
      */
     var saveImage = function () {
-        ImagesDb.save(++saveCount, imageBlob, {
-            success: function () {
-                updateCount();
-            }
-        });
+        timeout = window.setTimeout(function () {
+            ImagesDb.save(++saveCount, imageBlob, {
+                success: function () {
+                    updateCount();
+                    saveImage();
+                }
+            });
+        }, DELAY);
     };
 
     /**
      * Starts the experiment.
      */
     var start = function () {
-        interval = window.setInterval(saveImage, STEP);
-
         $btnStart.addClass('hidden');
         $btnStop.removeClass('hidden');
         $counter.removeClass('hidden');
+
+        saveImage();
     };
 
     /**
      * Stops the loop of saving to the local database.
      */
     var stop = function () {
-        window.clearInterval(interval);
+        window.clearTimeout(timeout);
 
         $btnStop.addClass('hidden');
         $btnStart.removeClass('hidden');
@@ -96,6 +106,11 @@ function ($, ImagesDb, ImagesWeb) {
     $(document).ready(function () {
         $btnStart.on('click', start);
         $btnStop.on('click', stop);
+
+        if (!Db.supported) {
+            $btnStart.addClass('hidden');
+            $notSupported.removeClass('hidden');
+        }
     });
 
     /**

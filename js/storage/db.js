@@ -52,7 +52,9 @@ function () {
      * Deletes the database.
      */
     p.deleteDatabase = function () {
-        window.indexedDB.deleteDatabase(DB_NAME);
+        if (this.supported) {
+            window.indexedDB.deleteDatabase(DB_NAME);
+        }
     };
 
     /**
