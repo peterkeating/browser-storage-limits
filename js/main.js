@@ -139,10 +139,19 @@ function ($, Db, ImagesDb, ImagesWeb) {
         $btnStart.on('click', start);
         $btnStop.on('click', stop);
 
-        if (!Db.supported) {
+        if (!Db.supported || !window.FileReader) {
             $btnStart.addClass('hidden');
             $notSupported.removeClass('hidden');
+
+            if (!window.FileReader) {
+                addNote('FileReader is not supported in this browser.');
+            }
+
             return;
+        }
+
+        if (window.usingIndexedDBPolyfill) {
+            addNote('Browser doesn\'t support indexedDB, falls back to using the <a href="https://github.com/facebook/IndexedDB-polyfill/">Facebook indexedDB polyfill</a> that mimics the indexedDB API using the Web SQL database API.');
         }
     });
 

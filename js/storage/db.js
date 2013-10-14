@@ -1,6 +1,7 @@
 define([
+    'indexedDBPolyfill'
 ],
-function () {
+function (indexedDBPolyfill) {
 
         /**
          * Current version of the database structure.
