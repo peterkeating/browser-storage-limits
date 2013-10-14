@@ -32,9 +32,9 @@ function () {
      */
     p.checkBlobSupport = function () {
         try {
-            var store = getTransaction(BLOB_SUPPORT_OBJECT_STORE).objectStore(BLOB_SUPPORT_OBJECT_STORE);
-            store.objectStore(BLOB_SUPPORT_OBJECT_STORE).put(new Blob(), 'key');
-            store.objectStore(BLOB_SUPPORT_OBJECT_STORE).delete('key');
+            var store = this.getTransaction(BLOB_SUPPORT_OBJECT_STORE).objectStore(BLOB_SUPPORT_OBJECT_STORE);
+            store.put(new Blob(), 'key');
+            store['delete']('key');
             this.blobSupported = true;
         } catch (err) {
             this.blobSupported = false;
