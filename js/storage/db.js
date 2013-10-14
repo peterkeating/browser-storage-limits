@@ -14,6 +14,7 @@ function () {
 
     function Db() {
         this.checkSupport();
+        this.deleteDatabase();
         this.open();
     }
 
