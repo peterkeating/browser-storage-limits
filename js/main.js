@@ -10,7 +10,7 @@ function ($, Db, ImagesDb, ImagesWeb) {
         /**
          * Milliseconds between each save of an image to the local database.
          */
-    var DELAY = 250,
+    var DELAY = 100,
 
         /**
          * Button to kick start experiment.
