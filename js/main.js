@@ -22,6 +22,17 @@ function ($, ImagesDb, ImagesWeb) {
         $btnStop = $('.js-btn-stop'),
 
         /**
+         * Counter component used to show the current size that has been saved to
+         * the database.
+         */
+        $counter = $('.js-counter'),
+
+        /**
+         * DOM element that stores the current storage size.
+         */
+        $counterCount = $('.js-counter .js-count'),
+
+        /**
          * Blob to be saved into local storage.
          */
         imageBlob,
@@ -40,7 +51,11 @@ function ($, ImagesDb, ImagesWeb) {
      * Saves image to the local database.
      */
     var saveImage = function () {
-        ImagesDb.save(++saveCount, imageBlob);
+        ImagesDb.save(++saveCount, imageBlob, {
+            success: function () {
+                updateCount();
+            }
+        });
     };
 
     /**
@@ -51,6 +66,7 @@ function ($, ImagesDb, ImagesWeb) {
 
         $btnStart.addClass('hidden');
         $btnStop.removeClass('hidden');
+        $counter.removeClass('hidden');
     };
 
     /**
@@ -61,6 +77,20 @@ function ($, ImagesDb, ImagesWeb) {
 
         $btnStop.addClass('hidden');
         $btnStart.removeClass('hidden');
+    };
+
+    /**
+     * Updates the counter.
+     */
+    var updateCount = function () {
+        /**
+         * Calculate the total bytes saved based on how many times to the image
+         * has been saved, and then convert the value to megabytes while rounding
+         * to 2 decimal places.
+         */
+
+        var count = parseFloat((saveCount * imageBlob.size) / 1048576).toFixed(2);
+        $counterCount.html(count);
     };
 
     $(document).ready(function () {

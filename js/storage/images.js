@@ -16,11 +16,17 @@ function (Db) {
     /**
      * Saves the provided image to the database.
      */
-    p.save = function (id, image) {
+    p.save = function (id, image, options) {
         var transaction = Db.getTransaction(OBJECT_STORE),
             store = transaction.objectStore(OBJECT_STORE);
 
-        store.put(image, id);
+        console.log(id);
+
+        store.put(image, id).onsuccess = function (event) {
+            if (options.success) {
+                options.success();
+            }
+        };
     };
 
     return new Images();

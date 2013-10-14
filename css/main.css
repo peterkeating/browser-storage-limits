@@ -39,3 +39,17 @@ body,
 .btn-stop {
     background-color: #a72525;
 }
+
+.counter {
+    margin-bottom: 2em;
+    text-align: center;
+}
+
+.counter .count {
+    font-size: 5em;
+}
+
+.counter .unit {
+    font-size: 0.9em;
+    font-style: italic;
+}
