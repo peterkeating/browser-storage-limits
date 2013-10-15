@@ -21,6 +21,13 @@ body,
     text-align: center;
 }
 
+@media all and (max-width: 600px) {
+    .content {
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+}
+
 .hidden {
     display: none;
 }
