@@ -13,7 +13,8 @@ module.exports = function(grunt) {
         connect: {
             dev: {
                 options: {
-                    port: 9001,
+                    hostname: '*',
+                    port: 9001
                 }
             }
         }
