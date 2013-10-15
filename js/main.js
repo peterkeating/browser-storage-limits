@@ -70,9 +70,13 @@ function ($, Db, ImagesDb, ImagesWeb) {
     /**
      * Adds a note to the list of notes and reveals the notes.
      */
-    var addNote = function (note) {
+    var addNote = function (id, note) {
+        if ($notesList.find('.' + id).length > 0) {
+            return;
+        }
+
         window.requestAnimationFrame(function () {
-            $notesList.append('<li>' + note + '</li>');
+            $notesList.append('<li class="' + id + '">' + note + '</li>');
             $notes.removeClass('hidden');
         });
     };
@@ -103,10 +107,11 @@ function ($, Db, ImagesDb, ImagesWeb) {
             $btnStart.addClass('hidden');
             $btnStop.removeClass('hidden');
             $counter.removeClass('hidden');
+            $btnStart.html('Continue Experiment');
         });
 
         if (!Db.blobSupported) {
-            addNote('Browser doesn\'t support storing blobs, reverted to converting blob to base64 using <a href="https://developer.mozilla.org/en-US/docs/Web/API/FileReader">FileReader</a> & <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window.btoa">btoa</a>.');
+            addNote('blob-support', 'Browser doesn\'t support storing blobs, reverted to converting blob to base64 using <a href="https://developer.mozilla.org/en-US/docs/Web/API/FileReader">FileReader</a> & <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window.btoa">btoa</a>.');
         }
 
         running = true;
@@ -153,14 +158,14 @@ function ($, Db, ImagesDb, ImagesWeb) {
             });
 
             if (!window.FileReader) {
-                addNote('FileReader is not supported in this browser.');
+                addNote('file-reader-support', 'FileReader is not supported in this browser.');
             }
 
             return;
         }
 
         if (window.usingIndexedDBPolyfill) {
-            addNote('Browser doesn\'t support indexedDB, falls back to using the <a href="https://github.com/facebook/IndexedDB-polyfill/">Facebook indexedDB polyfill</a> that mimics the indexedDB API using the Web SQL database API.');
+            addNote('indexeddb-polyfill', 'Browser doesn\'t support indexedDB, falls back to using the <a href="https://github.com/facebook/IndexedDB-polyfill/">Facebook indexedDB polyfill</a> that mimics the indexedDB API using the Web SQL database API.');
         }
     });
 
