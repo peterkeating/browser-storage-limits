@@ -110,13 +110,17 @@ function ($, Db, ImagesDb, ImagesWeb) {
             $btnStart.html('Continue Experiment');
         });
 
-        if (!Db.blobSupported) {
-            addNote('blob-support', 'Browser doesn\'t support storing blobs, reverted to converting blob to base64 using <a href="https://developer.mozilla.org/en-US/docs/Web/API/FileReader">FileReader</a> & <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window.btoa">btoa</a>.');
-        }
-
         running = true;
 
-        saveImage();
+        Db.open({
+            success: function () {
+                if (!Db.blobSupported) {
+                    addNote('blob-support', 'Browser doesn\'t support storing blobs, reverted to converting blob to base64 using <a href="https://developer.mozilla.org/en-US/docs/Web/API/FileReader">FileReader</a> & <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window.btoa">btoa</a>.');
+                }
+
+                saveImage();
+            }
+        });
     };
 
     /**

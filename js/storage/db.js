@@ -22,7 +22,6 @@ function (indexedDBPolyfill) {
     function Db() {
         this.checkSupport();
         this.deleteDatabase();
-        this.open();
     }
 
     var p = Db.prototype = {};
@@ -31,7 +30,7 @@ function (indexedDBPolyfill) {
      * Checks to see if the browser supports saving a blob into the local database
      * by trying to do exactly that.
      */
-    p.checkBlobSupport = function () {
+    p.checkBlobSupport = function (options) {
         try {
             var store = this.getTransaction(BLOB_SUPPORT_OBJECT_STORE).objectStore(BLOB_SUPPORT_OBJECT_STORE);
             store.put(new Blob(), 'key');
@@ -39,6 +38,10 @@ function (indexedDBPolyfill) {
             this.blobSupported = true;
         } catch (err) {
             this.blobSupported = false;
+        }
+
+        if (options.success) {
+            options.success();
         }
     };
 
@@ -69,7 +72,7 @@ function (indexedDBPolyfill) {
      * Opens a connection to the local database and performs any updates that are
      * required.
      */
-    p.open = function () {
+    p.open = function (options) {
         if (!this.supported) {
             return;
         }
@@ -91,7 +94,7 @@ function (indexedDBPolyfill) {
 
         openRequest.onsuccess = function () {
             self.database = openRequest.result;
-            self.checkBlobSupport();
+            self.checkBlobSupport(options);
         };
     };
 
