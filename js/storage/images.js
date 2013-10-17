@@ -1,10 +1,11 @@
 /*global define */
 define([
     'storage/db',
-    'storage/storageoptimization'
+    'storage/storageoptimization',
+    'utils/string'
 ],
 
-function (Db, StorageOptimization) {
+function (Db, StorageOptimization, StringUtil) {
 
     /**
      * Name of the object store in the local database.
@@ -55,6 +56,7 @@ function (Db, StorageOptimization) {
      * Saves the provided image to the database.
      */
     p.save = function (id, image, options) {
+
         /**
          * Function that handles saving the image to local storage.
          */
@@ -64,7 +66,7 @@ function (Db, StorageOptimization) {
 
             store.put(objectToSave, id).onsuccess = function () {
                 if (options.success) {
-                    options.success();
+                    options.success((Db.blobSupported && !window.usingIndexedDBPolyfill) ? objectToSave.size : StringUtil.stringToBytes(objectToSave).length);
                 }
             };
         };

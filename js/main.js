@@ -65,7 +65,12 @@ function ($, Db, ImagesDb, ImagesWeb) {
         /**
          * Count of how many times the image has been saved to the local database.
          */
-        saveCount = 0;
+        saveCount = 0,
+
+        /**
+         * Stores a count of the total size that has been saved to the local DB.
+         */
+        totalSizeSaved = 0;
 
     /**
      * Adds a note to the list of notes and reveals the notes.
@@ -91,7 +96,8 @@ function ($, Db, ImagesDb, ImagesWeb) {
 
         timeout = window.setTimeout(function () {
             ImagesDb.save(++saveCount, imageBlob, {
-                success: function () {
+                success: function (size) {
+                    totalSizeSaved += size;
                     updateCount();
                     saveImage();
                 }
@@ -147,7 +153,7 @@ function ($, Db, ImagesDb, ImagesWeb) {
          * to 2 decimal places.
          */
 
-        var count = parseFloat((saveCount * imageBlob.size) / 1048576).toFixed(2);
+        var count = parseFloat(totalSizeSaved / 1048576).toFixed(2);
         window.requestAnimationFrame(function () {  $counterCount.html(count); });
     };
 
