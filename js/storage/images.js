@@ -36,8 +36,14 @@ function (Db, StorageOptimization) {
         };
 
         store.get(id).onsuccess = function (event) {
-            var data = fixBinary(atob(StorageOptimization.decompress(event.target.result))),
+            var data, blob;
+
+            if (Db.blobSupported && !window.usingIndexedDBPolyfill) {
+                blob = event.target.result;
+            } else {
+                data = fixBinary(atob(StorageOptimization.decompress(event.target.result))),
                 blob = new Blob([data], {type: 'image/png'});
+            }
 
             if (options.success) {
                 options.success(blob);
