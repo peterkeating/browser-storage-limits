@@ -1,8 +1,7 @@
-define([
-    'jquery'
-],
+/*global define */
+define([],
 
-function ($) {
+function () {
 
     /**
      * URL to image to be loaded.

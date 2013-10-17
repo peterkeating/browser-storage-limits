@@ -1,3 +1,4 @@
+/*global define */
 define([
     'storage/db',
     'storage/storageoptimization'
@@ -6,7 +7,7 @@ define([
 function (Db, StorageOptimization) {
 
     /**
-     * URL to image to be loaded.
+     * Name of the object store in the local database.
      */
     var OBJECT_STORE = 'images';
 
@@ -22,20 +23,21 @@ function (Db, StorageOptimization) {
         store = transaction.objectStore(OBJECT_STORE);
 
         var fixBinary = function (bin) {
-            var length = bin.length;
-            var buf = new ArrayBuffer(length);
-            var arr = new Uint8Array(buf);
+            var length = bin.length,
+                buf = new ArrayBuffer(length),
+                arr = new Uint8Array(buf),
+                i = 0;
 
-            for (var i = 0; i < length; i++) {
+            for (i; i < length; i++) {
                 arr[i] = bin.charCodeAt(i);
             }
 
             return buf;
-        }
+        };
 
         store.get(id).onsuccess = function (event) {
-            var data = fixBinary(atob(StorageOptimization.decompress(event.target.result)));
-            blob = new Blob([data], {type: 'image/png'});
+            var data = fixBinary(atob(StorageOptimization.decompress(event.target.result))),
+                blob = new Blob([data], {type: 'image/png'});
 
             if (options.success) {
                 options.success(blob);
@@ -52,14 +54,14 @@ function (Db, StorageOptimization) {
          */
         var put = function (objectToSave) {
             var transaction = Db.getTransaction(OBJECT_STORE),
-            store = transaction.objectStore(OBJECT_STORE);
+                store = transaction.objectStore(OBJECT_STORE);
 
-            store.put(objectToSave, id).onsuccess = function (event) {
+            store.put(objectToSave, id).onsuccess = function () {
                 if (options.success) {
                     options.success();
                 }
             };
-        }
+        };
 
         /**
          * If the local database supports saving the blob straight to local storage
