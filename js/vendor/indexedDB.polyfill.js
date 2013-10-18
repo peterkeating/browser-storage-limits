@@ -1496,7 +1496,10 @@
     txFn && txFn.call(sqldb,
       function (sqlTx) { performOperation(me, sqlTx, 0); },
       function (sqlError) {
-        db.close();
+        /**
+         * No longer closing the Db connection when an error occurs.
+         */
+        //db.close();
 
         db._transactionCompleted();
 
