@@ -100,6 +100,10 @@ function ($, Db, ImagesDb, ImagesWeb) {
                     totalSizeSaved += size;
                     updateCount();
                     saveImage();
+                },
+                error: function () {
+                    $('.js-limit-constraint').removeClass('hidden');
+                    stop();
                 }
             });
         }, DELAY);

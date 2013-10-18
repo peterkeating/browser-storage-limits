@@ -56,6 +56,9 @@ function (Db, StorageOptimization, StringUtil) {
      * Saves the provided image to the database.
      */
     p.save = function (id, image, options) {
+        var self = this;
+
+        var attemptCount = 0;
 
         /**
          * Function that handles saving the image to local storage.
@@ -64,10 +67,32 @@ function (Db, StorageOptimization, StringUtil) {
             var transaction = Db.getTransaction(OBJECT_STORE),
                 store = transaction.objectStore(OBJECT_STORE);
 
-            store.put(objectToSave, id).onsuccess = function () {
+            attemptCount++;
+
+            /**
+             * An attempt to save the image has been made twice and failed, so the
+             * user must have denied the increase in storage limit.
+             */
+            if (attemptCount > 2) {
+                if (options.error) {
+                    options.error();
+                }
+
+                return;
+            }
+
+            transaction.oncomplete = function () {
                 if (options.success) {
                     options.success((Db.blobSupported && !window.usingIndexedDBPolyfill) ? objectToSave.size : StringUtil.stringToBytes(objectToSave).length);
                 }
+            };
+
+            /**
+             * onabort event is dispatched when the limit has been reached and the
+             * user has decided to either increase the limit of cancel.
+             */
+            transaction.onabort = function () {
+                put(objectToSave);
             };
         };
 
