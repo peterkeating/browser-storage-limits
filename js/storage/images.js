@@ -42,7 +42,7 @@ function (Db, StorageOptimization, StringUtil) {
             if (Db.blobSupported && !window.usingIndexedDBPolyfill) {
                 blob = event.target.result;
             } else {
-                data = fixBinary(atob(StorageOptimization.decompress(event.target.result))),
+                data = fixBinary(atob(StorageOptimization.decompress(event.target.result)));
                 blob = new Blob([data], {type: 'image/png'});
             }
 
@@ -56,8 +56,6 @@ function (Db, StorageOptimization, StringUtil) {
      * Saves the provided image to the database.
      */
     p.save = function (id, image, options) {
-        var self = this;
-
         var attemptCount = 0;
 
         /**
@@ -80,6 +78,8 @@ function (Db, StorageOptimization, StringUtil) {
 
                 return;
             }
+
+            store.put(objectToSave, id);
 
             transaction.oncomplete = function () {
                 if (options.success) {
