@@ -39,7 +39,7 @@ function (Db, StorageOptimization, StringUtil) {
         store.get(id).onsuccess = function (event) {
             var data, blob;
 
-            if (Db.blobSupported && !window.usingIndexedDBPolyfill) {
+            if (Db.blobSupported && !window.indexedDB.polyfill) {
                 blob = event.target.result;
             } else {
                 data = fixBinary(atob(StorageOptimization.decompress(event.target.result)));
@@ -83,7 +83,7 @@ function (Db, StorageOptimization, StringUtil) {
 
             transaction.oncomplete = function () {
                 if (options.success) {
-                    options.success((Db.blobSupported && !window.usingIndexedDBPolyfill) ? objectToSave.size : StringUtil.stringToBytes(objectToSave).length);
+                    options.success((Db.blobSupported && !window.indexedDB.polyfill) ? objectToSave.size : StringUtil.stringToBytes(objectToSave).length);
                 }
             };
 
@@ -100,7 +100,7 @@ function (Db, StorageOptimization, StringUtil) {
          * If the local database supports saving the blob straight to local storage
          * then we do that, otherwise a conversion to base 64 needs to happen first.
          */
-        if (Db.blobSupported && !window.usingIndexedDBPolyfill) {
+        if (Db.blobSupported && !window.indexedDB.polyfill) {
             put(image);
         } else {
             var reader = new FileReader();

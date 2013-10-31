@@ -51,7 +51,7 @@ function () {
      * Sets flag to indicate whether indexed DB is supported in the visiting browser.
      */
     p.checkSupport = function () {
-        this.supported = window.indexedDB !== undefined;
+        this.supported = !window.indexedDB.polyfill || window.openDatabase;
     };
 
     /**

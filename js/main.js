@@ -178,7 +178,7 @@ function ($, Db, ImagesDb, ImagesWeb) {
             return;
         }
 
-        if (window.usingIndexedDBPolyfill) {
+        if (window.indexedDB.polyfill) {
             addNote('indexeddb-polyfill', 'Browser doesn\'t support indexedDB, falls back to using the <a href="https://github.com/facebook/IndexedDB-polyfill/">Facebook indexedDB polyfill</a> that mimics the indexedDB API using the Web SQL database API.');
         }
     });

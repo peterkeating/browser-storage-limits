@@ -20,13 +20,14 @@
   var indexedDB = window.indexedDB = window.indexedDB || window.mozIndexedDB ||
     window.webkitIndexedDB || window.msIndexedDB || { polyfill : true };
 
+
   if (!indexedDB.polyfill) return;
 
-  /**
-   * Added line below so a note can be added to additional info that the polyfill
-   * was required.
-   */
-  window.usingIndexedDBPolyfill = true;
+  // browser doesn't support Web SQL so this polyfill can't operate.
+  if (!window.openDatabase) {
+    console.warn('This browser does not support IndexedDB or Web SQL API so it is not capable of client side storage.');
+    return;
+  }
 
   console.warn('This browser most likely does not support IndexedDB API. Initializing custom IndexedDB' +
     ' implementation using Web SQL Database API.');
